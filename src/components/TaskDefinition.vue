@@ -1,0 +1,34 @@
+<template>
+    <div class="task-definition-frame">
+      <SlotElement>
+          <p v-if="label != undefined">{{label}}</p>
+          <textarea v-bind:value="value" v-on:input="$emit('input', $event.target.value)" class="rounded-border" :style="{ resize: 'none', width: w != undefined ? w + 'rem' : '100%', height: h + 'rem' }"/>
+      </SlotElement>
+    </div>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import SlotElement from '../components/SlotElement.vue';
+
+@Component({
+    components: {
+        SlotElement
+    }
+})
+export default class TaskDefinition extends Vue {
+  @Prop() private value!: string;
+  @Prop() private label!: string;
+  @Prop() private w!: number;
+  @Prop() private h!: number;
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="scss">
+.task-definition-frame {
+    .rounded-border {
+        border-radius: 5px;
+    }
+}
+</style>
