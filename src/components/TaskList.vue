@@ -2,7 +2,7 @@
   <SlotElement>
         <p>Список заданий:</p>
         <SlotElement class="task-list">
-            <UIButton @click.native="onClickEvt(index)" v-for="(entity, index) in localTaskList" :key="index" :label="entity.Name" w="13" h="1.5"/>
+            <UIButton @click.native="onClickEvt(index)" v-for="(entity, index) in localTaskList" :key="index" :label="entity.name" w="13" h="1.5"/>
         </SlotElement>
   </SlotElement>
 </template>
@@ -23,7 +23,7 @@ export default class TaskList extends Vue {
   private localTaskList = [];
   created() {
     if (this.testIndex != -1) {
-      this.localTaskList = this.$store.state.ownTestsList[this.testIndex].TaskList;
+      this.localTaskList = this.$store.state.ownTestsList[this.testIndex].taskList;
     }
   }
   onClickEvt(index: number) {

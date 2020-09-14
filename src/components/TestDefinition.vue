@@ -2,7 +2,7 @@
     <div class="test-definition-frame">
       <SlotElement>
           <p v-if="label != undefined">{{label}}</p>
-          <textarea class="rounded-border" v-bind:value="value" v-on:input="$emit('input', $event.target.value)" :style="{ resize: 'none', width: w != undefined ? w + 'rem' : '100%', height: h + 'rem' }"/>
+          <textarea :enabled="enbld" class="rounded-border" v-bind:value="value" v-on:input="$emit('input', $event.target.value)" :style="{ resize: 'none', width: w != undefined ? w + 'rem' : '100%', height: h + 'rem' }"/>
       </SlotElement>
     </div>
 </template>
@@ -18,6 +18,7 @@ import SlotElement from '../components/SlotElement.vue';
 })
 export default class TestDefinition extends Vue {
   @Prop() private value!: string;
+  @Prop() private enbld!: boolean;
   @Prop() private label!: string;
   @Prop() private w!: number;
   @Prop() private h!: number;

@@ -21,8 +21,8 @@ Vue.use(VueRouter)
   },
   {
     path: '/',
-    name: 'tests-list',
-    component: () => import('../views/TestsListView.vue')
+    name: 'main',
+    component: () => import('../views/MainPage.vue')
   }
 ]
 

@@ -12,6 +12,10 @@
 
 <style lang="scss">
 #app {
+  -ms-user-select: none; 
+	-moz-user-select: none; 
+	-webkit-user-select: none; 
+	user-select: none; 
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;

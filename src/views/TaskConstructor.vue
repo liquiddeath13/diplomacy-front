@@ -1,7 +1,7 @@
 <template>
   <div class="task-construct">
     <div>
-      <TaskDefinition label="Описание задания:" h="25" v-model="$store.state.ownTestsList[$store.state.currentTestEditIndex].TaskList[$store.state.currentTaskIndex].Description"/>
+      <TaskDefinition label="Описание задания:" h="25" v-model="$store.state.ownTestsList[$store.state.currentTestEditIndex].taskList[$store.state.currentTaskIndex].description"/>
       <TaskFileList label="Список файлов задания:"/>
     </div>
     <div/>
@@ -10,7 +10,7 @@
         <UIButton label="Сохранить" @click.native="saveTask()"/>
         <UIButton v-if="this.$store.state.currentTaskIndex != -1" label="Удалить задание" @click.native="deleteTask()"/>
       </div>
-      <TaskDisplay class="task-display" label="Как выглядит задание для пользователя:" :description="$store.state.ownTestsList[$store.state.currentOver].TaskList[$store.state.currentTaskIndex].Description"/>
+      <TaskDisplay class="task-display" label="Как выглядит задание для пользователя:" :description="$store.state.ownTestsList[$store.state.currentOver].taskList[$store.state.currentTaskIndex].description"/>
     </div>
   </div>
 </template>
@@ -22,7 +22,7 @@ import TaskDefinition from '../components/TaskDefinition.vue';
 import TaskFileList from '../components/TaskFileList.vue';
 import UIButton from '../components/UIButton.vue';
 import { Component, Vue } from 'vue-property-decorator';
-import { Task } from '@/store';
+import { Task, Test, User } from '@/store';
 
 @Component({
     components: {
@@ -36,13 +36,21 @@ export default class TaskConstructor extends Vue {
   }
   saveTask() {
     const taskIndex = this.$store.state.currentTaskIndex;
-    (this.$store.state.ownTestsList[this.$store.state.currentTestEditIndex].TaskList as Task[])[taskIndex].Name = 'Задание ' + (taskIndex + 1);
+    (this.$store.state.ownTestsList[this.$store.state.currentTestEditIndex].taskList as Task[])[taskIndex].name = 'Задание ' + (taskIndex + 1);
     this.$router.push({ name: 'test-construct' });
   }
   deleteTask() {
-    if (confirm("Вы уверены, что хотите удалить тест?")) {
-      (this.$store.state.ownTestsList[this.$store.state.currentTestEditIndex].TaskList as Task[]).splice(this.$store.state.currentTaskIndex, 1);
-      this.$router.push({ name: 'test-construct' });
+    if (confirm("Вы уверены, что хотите удалить задание?")) {
+      if ((this.$store.state.ownTestsList[this.$store.state.currentTestEditIndex].taskList as Task[]).length < 2) {
+        User.removeTest((this.$store.state.ownTestsList as Test[])[this.$store.state.currentOver]).then(value => {
+            (this.$store.state.ownTestsList as Test[]).splice(this.$store.state.currentOver, 1);
+            this.$store.state.currentOver = -1;
+            this.$router.push({ name: 'main' });
+        });
+      } else {
+        (this.$store.state.ownTestsList[this.$store.state.currentTestEditIndex].taskList as Task[]).splice(this.$store.state.currentTaskIndex, 1);
+        this.$router.push({ name: 'test-construct' });
+      }
     }
   }
 }

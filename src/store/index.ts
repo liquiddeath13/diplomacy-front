@@ -1,74 +1,103 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
+import moment from 'moment';
 
 Vue.use(Vuex)
 
+export enum TaskTypes {
+  None,
+  OneAnswer,
+  MultipleAnswer,
+  Matching,
+  OpenAnswer
+}
+
+export enum TestTypes {
+  None,
+  Edu,
+  Regulate
+}
+
+export enum UserTypes {
+  None,
+  Student,
+  Teacher,
+  Admin
+}
+
 export interface Answer {
-  Description: string;
-  Flag: boolean;
+  description: string;
+  flag: boolean;
 }
 
 export interface Task {
-  Name: string;
-  Description: string;
-  AnswerList: Answer[];
+  name: string;
+  description: string;
+  type: TaskTypes;
+  answerList: Answer[];
 }
 
 export interface TaskSolution {
-  Task: Task;
-  UserAnswer: Answer;
+  task: Task;
+  userAnswer: Answer[];
 }
 
 export interface TestSolution {
-  TaskListSolution: TaskSolution[];
-  CreatedAt: Date;
-  SolutionMark: number;
+  testName: string;
+  taskListSolution: TaskSolution[];
+  createdAt: Date;
+  solutionMark: number;
 }
 
 export interface Test {
-  Name: string;
-  Description: string;
-  CreatedAt: Date;
-  EditedAt: Date;
-  TaskList: Task[];
+  type: TestTypes;
+  name: string;
+  description: string;
+  createdAt: Date;
+  editedAt: Date;
+  timeLimit: any;
+  taskList: Task[];
 }
 
-export interface UserInfo {
-  Name: string;
-  EMail: string;
+export interface User {
+  name: string;
+  userType: UserTypes;
 }
 
-export interface UserAuthInfo {
-  Token: string;
-  LongToken: string;
-  Expire: Date;
-}
-
-class WebAPI {
-  private Hostname = '';
-  
+export interface TestDescription {
+  testName: string;
+  createdAt: Date;
+  editedAt: Date;
+  averagePts: number;
+  solutionCount: number;
+  averageSolveTime: any;
+  solvedBy: User[];
 }
 
 export class User {
-  public getOwnTests(): Test[] {
-    let result: Test[] = [];
-
-    return result;
+  public static async getOwnTests(): Promise<Test[]> {
+    return (await axios.get("https://localhost:44349/UserTest/getTests?userID=1")).data;
   }
-  public getOwnSolutions(): TestSolution[] {
-    let result: TestSolution[] = [];
-
-    return result;
+  public static async addOrUpdateTest(test: Test): Promise<boolean> {
+    let statusCode = 404;
+    statusCode = (await axios.post("https://localhost:44349/UserTest/aouTest?userID=1", test, {
+      validateStatus: () => true
+    })).status;
+    return statusCode === 404;
   }
-  public getOwnInfo(): UserInfo {
-    let result: UserInfo = {EMail: '', Name: ''};
-
-    return result;
+  public static async removeTest(test: Test): Promise<boolean> {
+    let statusCode = 404;
+    statusCode = (await axios.post("https://localhost:44349/UserTest/delTest?userID=1", test, {
+      validateStatus: () => true
+    })).status;
+    return statusCode === 404;
   }
-  public tryAuth(): UserAuthInfo {
-    let result: UserAuthInfo = {Expire: new Date(Date.now()), LongToken: '', Token: ''};
-
-    return result;
+  public static async postSolution(ts: TestSolution): Promise<TestSolution> {
+    return (await axios.post("https://localhost:44349/UserTest/newSolution?userID=1", ts)).data;
+  }
+  public static async getTestDescription(testID: number): Promise<TestDescription> {
+    return (await axios.get("https://localhost:44349/UserTest/getTestDescription?userID=1&testID="+testID)).data;
   }
 }
 
@@ -82,7 +111,8 @@ export default new Vuex.Store({
     currentTestEditIndex: -1,
     currentTaskIndex: -1,
     ownTestsList: [],
-    TestSolution: {}
+    TestSolution: {},
+    testDetails: {}
   },
   mutations: {
   },

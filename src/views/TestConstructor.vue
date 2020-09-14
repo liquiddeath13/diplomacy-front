@@ -1,8 +1,8 @@
 <template>
   <div class="test-construct">
     <div class="container1">
-        <TestDefinition label="Укажите название теста (Обязательно):" h="5" v-model="$store.state.ownTestsList[$store.state.currentTestEditIndex].Name"/>
-        <TestDescription label="Укажите описание теста (Не обязательно):" h="15" v-model="$store.state.ownTestsList[$store.state.currentTestEditIndex].Description"/>
+        <TestDefinition :enbld="$store.state.currentTestEditIndex != -1" label="Укажите название теста (Обязательно):" h="5" v-model="$store.state.ownTestsList[$store.state.currentTestEditIndex].name"/>
+        <TestDescription label="Укажите описание теста (Не обязательно):" h="15" v-model="$store.state.ownTestsList[$store.state.currentTestEditIndex].description"/>
         <SlotElement>
           <p>Укажите файл (файлы), содержащий задания теста (Не обязательно):</p>
           <UploadForm label="ни одного файла выбрано не было..." h="1.1"/>
@@ -26,7 +26,7 @@ import UIButton from '../components/UIButton.vue';
 import UploadForm from '../components/UploadForm.vue';
 import TaskList from '../components/TaskList.vue';
 import { Component, Vue } from 'vue-property-decorator';
-import { Test, Task } from '@/store';
+import { Test, Task, TaskTypes, User } from '@/store';
 
 @Component({
     components: {
@@ -39,15 +39,15 @@ export default class TestConstructor extends Vue {
   }
   createOrEditTask() {
     if (this.$store.state.currentTaskIndex === -1) {
-      const newLen = (this.$store.state.ownTestsList[this.$store.state.currentTestEditIndex].TaskList as Task[]).push({Name: '', Description: '', AnswerList: []});
+      const newLen = (this.$store.state.ownTestsList[this.$store.state.currentTestEditIndex].taskList as Task[]).push({name: '', description: '', type: TaskTypes.None, answerList: []});
       this.$store.state.currentTaskIndex = newLen - 1;
     }
     this.$router.push({ name: 'task-construct' });
   }
-  completeTestEdit() {
-    (this.$store.state.ownTestsList as Test[])[this.$store.state.currentTestEditIndex].EditedAt = new Date(Date.now());
+  async completeTestEdit() {
+    await User.addOrUpdateTest((this.$store.state.ownTestsList as Test[])[this.$store.state.currentTestEditIndex]);
     this.$store.state.currentTestEditIndex = -1;
-    this.$router.push({ name: 'tests-list' });
+    this.$router.push({ name: 'main' });
   }
 }
 </script>

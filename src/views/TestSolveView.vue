@@ -1,6 +1,28 @@
 <template>
   <div class="test-solve-view">
-    <TaskDisplay class="task-display" label="" :description="solution.TaskListSolution[$store.state.currentTaskIndex].Task.Description"/>
+    <div class="task-side">
+      <TaskDisplay class="task-display" label="" :description="solution.taskListSolution[$store.state.currentTaskIndex].task.description"/>
+      <div v-if="solution.taskListSolution[$store.state.currentTaskIndex].task.type === 1">
+        <div v-for="(entity, index) in solution.taskListSolution[$store.state.currentTaskIndex].task.answerList" :key="index">
+          <input type="radio" name="one-answer" :value="entity" v-model="solution.taskListSolution[$store.state.currentTaskIndex].userAnswer[0]"/> {{entity.description}}
+        </div>
+      </div>
+      <div v-else-if="solution.taskListSolution[$store.state.currentTaskIndex].task.type === 2">
+        <div v-for="(entity, index) in solution.taskListSolution[$store.state.currentTaskIndex].task.answerList" :key="index">
+          <input type="checkbox" :id="'answer-'+index" :value="entity" v-model="solution.taskListSolution[$store.state.currentTaskIndex].userAnswer"/> {{entity.description}}
+        </div>
+      </div>
+      <div v-else-if="solution.taskListSolution[$store.state.currentTaskIndex].task.type === 3">
+        matching answer
+      </div>
+      <div v-else-if="solution.taskListSolution[$store.state.currentTaskIndex].task.type === 4">
+          Ответ:
+          <input type="text" v-model="solution.taskListSolution[$store.state.currentTaskIndex].userAnswer.description"/>
+      </div>
+      <div v-else>
+        let me see what just happened {{solution.taskListSolution[$store.state.currentTaskIndex].task}}
+      </div>
+    </div>
     <div/>
     <div class="container1">
         <TaskList :testIndex="$store.state.currentOver"/>
@@ -10,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { Task, TestSolution } from '@/store';
+import { Task, TestSolution, User } from '@/store';
 // @ is an alias to /src
 import { Component, Vue } from 'vue-property-decorator';
 import TaskDisplay from '../components/TaskDisplay.vue';
@@ -23,25 +45,27 @@ import UIButton from '../components/UIButton.vue';
     }
 })
 export default class TestSolveView extends Vue {
-  private solution: TestSolution = {TaskListSolution: [], CreatedAt: new Date(Date.now()), SolutionMark: 0.0};
+  private solution: TestSolution = {
+    taskListSolution: [],
+     createdAt: new Date(Date.now()),
+     solutionMark: 0.0,
+     testName: this.$store.state.ownTestsList[this.$store.state.currentOver].name
+  };
   created() {
     this.$store.state.currentTaskIndex = 0;
-    const taskList = (this.$store.state.ownTestsList[this.$store.state.currentOver].TaskList as Task[]);
+    const taskList = (this.$store.state.ownTestsList[this.$store.state.currentOver].taskList as Task[]);
     taskList.forEach((value) => {
-      this.solution.TaskListSolution.push({
-        Task: value,
-        UserAnswer: {
-          Description: '',
-          Flag: false
-        }
+      this.solution.taskListSolution.push({
+        task: value,
+        userAnswer: []
       });
     });
   }
   finishSolve() {
-    this.solution.TaskListSolution.forEach((value) => {
-      console.log(value.UserAnswer);
+    User.postSolution(this.solution).then((value) => {
+      console.log(value.solutionMark);
     });
-    this.$router.push({ name: 'tests-list' });
+    this.$router.push({ name: 'main' });
   }
 }
 </script>
