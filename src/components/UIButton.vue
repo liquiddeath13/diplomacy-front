@@ -1,6 +1,10 @@
 <template>
     <div class="ui-button">
-        <button class="rounded-border" :style="{ resize: 'none', width: w + 'rem', height: h + 'rem' }">{{label}}</button>
+        <button class="rounded-border" 
+                :style="{ resize: 'none', width: w + 'rem', height: h + 'rem', color: textColor, 'background-color': backColor }"
+                >
+                {{label}}
+        </button>
     </div>
 </template>
 
@@ -12,6 +16,8 @@ export default class UIButton extends Vue {
   @Prop() private label!: string;
   @Prop() private w?: number;
   @Prop() private h?: number;
+  @Prop() private textColor!: string;
+  @Prop() private backColor!: string;
 }
 </script>
 

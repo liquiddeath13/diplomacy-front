@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-import moment from 'moment';
 
 Vue.use(Vuex)
 
@@ -20,10 +19,24 @@ export enum TestTypes {
 }
 
 export enum UserTypes {
-  None,
-  Student,
-  Teacher,
-  Admin
+  None = "Не определено",
+  Student = "Студент",
+  Teacher = "Преподаватель",
+  Admin = "Администратор"
+}
+
+export interface SharpTimeSpan {
+  days: number;
+  hours: number;
+  milliseconds: number;
+  minutes: number;
+  seconds: number;
+  ticks: number;
+  totalDays: number;
+  totalHours: number;
+  totalMilliseconds: number;
+  totalMinutes: number;
+  totalSeconds: number;
 }
 
 export interface Answer {
@@ -48,6 +61,7 @@ export interface TestSolution {
   taskListSolution: TaskSolution[];
   createdAt: Date;
   solutionMark: number;
+  solveTime: SharpTimeSpan;
 }
 
 export interface Test {
@@ -56,7 +70,7 @@ export interface Test {
   description: string;
   createdAt: Date;
   editedAt: Date;
-  timeLimit: any;
+  timeLimit: SharpTimeSpan;
   taskList: Task[];
 }
 
@@ -70,8 +84,10 @@ export interface TestDescription {
   createdAt: Date;
   editedAt: Date;
   averagePts: number;
+  maxPts: number;
   solutionCount: number;
-  averageSolveTime: any;
+  averageSolveTime: SharpTimeSpan;
+  timeLimit: SharpTimeSpan;
   solvedBy: User[];
 }
 
@@ -108,6 +124,8 @@ export default new Vuex.Store({
     newTestDescription: '',
     newTaskList: [],
     currentOver: -1,
+    workMode: 0,
+    watchSolutionIndex: -1,
     currentTestEditIndex: -1,
     currentTaskIndex: -1,
     ownTestsList: [],

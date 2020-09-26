@@ -7,8 +7,8 @@
     <div/>
     <div>
       <div class="btn-panel">
-        <UIButton label="Сохранить" @click.native="saveTask()"/>
-        <UIButton v-if="this.$store.state.currentTaskIndex != -1" label="Удалить задание" @click.native="deleteTask()"/>
+        <UIButton label="Сохранить" @click.native="saveTask()" textColor="black"/>
+        <UIButton v-if="this.$store.state.currentTaskIndex != -1" label="Удалить задание" @click.native="deleteTask()" textColor="black"/>
       </div>
       <TaskDisplay class="task-display" label="Как выглядит задание для пользователя:" :description="$store.state.ownTestsList[$store.state.currentOver].taskList[$store.state.currentTaskIndex].description"/>
     </div>

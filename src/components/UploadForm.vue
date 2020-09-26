@@ -1,7 +1,7 @@
 <template>
     <div class="upload-form">
         <input type="text" readonly :placeholder="label" :style="{ resize: 'none', width: w != undefined ? w + 'rem' : '100%', height: h + 'rem' }"/>
-        <UIButton label="Обзор..." w="5" h="1.5"/>
+        <UIButton label="Обзор..." w="5" h="1.5" textColor="black"/>
     </div>
 </template>
 

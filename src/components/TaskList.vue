@@ -1,8 +1,16 @@
 <template>
   <SlotElement>
-        <p>Список заданий:</p>
+        <!-- <p>Список заданий:</p> -->
         <SlotElement class="task-list">
-            <UIButton @click.native="onClickEvt(index)" v-for="(entity, index) in localTaskList" :key="index" :label="entity.name" w="13" h="1.5"/>
+            <UIButton @click.native="onClickEvt(index)" 
+                      :id="'task-list-button-'+index"
+                      v-for="(entity, index) in localTaskList" 
+                      :key="index" 
+                      :label="index+1" 
+                      w="3" h="1.5"
+                      :textColor="colorArray[index]"
+                      :backColor="$store.state.currentTaskIndex === index ? '#aad6ef' : 'white'"
+            />
         </SlotElement>
   </SlotElement>
 </template>
@@ -20,6 +28,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 })
 export default class TaskList extends Vue {
   @Prop() private testIndex!: number;
+  @Prop() private colorArray!: string[];
   private localTaskList = [];
   created() {
     if (this.testIndex != -1) {
@@ -35,16 +44,9 @@ export default class TaskList extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .task-list {
-  height: 24.4rem;
-  width: 16rem;
-  overflow-y: scroll;
-  border: 1px solid black;
-  border-radius: 5px;
   text-align: center;
   display: flex;
-  flex-direction: column;
   gap: 0.4rem;
-  padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
 </style>

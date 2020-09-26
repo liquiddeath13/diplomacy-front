@@ -3,7 +3,7 @@
       <SlotElement>
           <div class="header">
               <p v-if="label != undefined">{{label}}</p>
-              <UIButton class="add-btn" label="Добавить" w="15" h="1.5"/>
+              <UIButton class="add-btn" label="Добавить" w="15" h="1.5" textColor="black"/>
           </div>
           <div class="file-list rounded-border">
 

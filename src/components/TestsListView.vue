@@ -10,6 +10,7 @@
                  @mouseover="setCurrentLight(index)"
             >
                 <p class="description">{{entity.name}}</p>
+                <p class="type">({{getTestTypeDescription(entity.type)}})</p>
             </div>
         </div>
     </div>
@@ -25,6 +26,10 @@ export default class TestsList extends Vue {
         User.getOwnTests().then(value => {
             this.$store.state.ownTestsList = value;
         });
+    }
+    getTestTypeDescription(testType: TestTypes): string {
+        if (testType == TestTypes.Edu) return 'Обучающий';
+        return 'Контрольный';
     }
     setCurrentLight(index: number) {
         const activeStr = ' active';
@@ -46,7 +51,19 @@ export default class TestsList extends Vue {
             editedAt: new Date(Date.now()),
             taskList: [],
             type: TestTypes.None,
-            timeLimit: {}
+            timeLimit: {
+                days: 0,
+                hours: 0,
+                milliseconds: 0,
+                minutes: 0,
+                seconds: 0,
+                ticks: 0,
+                totalDays: 0,
+                totalHours: 0,
+                totalMilliseconds: 0,
+                totalMinutes: 0,
+                totalSeconds: 0
+            }
         });
         this.$store.state.currentTestEditIndex = newLen - 1;
         this.$router.push({ name: 'test-construct' });
@@ -80,6 +97,7 @@ export default class TestsList extends Vue {
     border: 0.5px solid black;
     border-radius: 5px;
     display: flex;
+    gap: 0.5rem;
 }
 .description {
     margin-left: 2rem;
